@@ -1,115 +1,284 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_chat_app_ui/utils/fade_animation.dart';
+import 'package:flutter_chat_app_ui/utils/system_ui.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:ionicons/ionicons.dart';
 
-void main() {
-  runApp(const MyApp());
-}
+void main() =>
+    runApp(const MaterialApp(debugShowCheckedModeBanner: false, home: MyApp()));
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  String PROFILE_PIC = 'assets/profile_pic.jpg';
+  final ScrollController _scrollController = ScrollController();
+  final TextEditingController _textEditingController =
+      TextEditingController(text: '');
+  List<Widget> messages = [
+    const ChatCard(
+      isRight: true,
+      text: 'Hey, how the things going?',
+    ),
+    const ChatCard(
+        text:
+            "Thanks Afif! Almost there. I'll work on making those changes you suggested and will shot it over."),
+    const ChatCard(
+        text:
+            "Hey Afif, ive finished with the requirements doc! I made some notes in the gdoc as well for Phoenix to look over."),
+    const ChatCard(
+      isRight: true,
+      text: "Awesome! Thanks. I'll look at this today",
+    ),
+    const ChatCard(
+        text: "No rush though - we still have to wait for Lana's design"),
+    const ChatCard(
+        text:
+            "Hey Afif, can you please review the latest design when you can?"),
+    const ChatCard(
+      isRight: true,
+      text: "Sure thing, I'll have a look today. They're looking great!",
+    ),
+    const ChatCard(
+        isRight: true,
+        text:
+            "Hey Humeyra, I've seen your design, I just have a few revisions on this. You could make the spacing even more consistent as I noticed a few different spacing. You can also change the primary color to be a bit more contrasting. The rest is very good."),
+    const ChatCard(
+        text: "Hey Afif, thank you for your feedback, looking forward to do it")
+  ];
+
+  PreferredSizeWidget appBar() {
+    return AppBar(
+      elevation: 0.5,
+      backgroundColor: Colors.white,
+      leading: IconButton(
+          onPressed: () {},
+          icon: const Icon(
+            Ionicons.arrow_back,
+            color: Colors.blue,
+          )),
+      title: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Container(
+            height: 36,
+            width: 36,
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(36),
+                image: DecorationImage(
+                    image: AssetImage(PROFILE_PIC), fit: BoxFit.cover)),
+          ),
+          const SizedBox(
+            width: 8,
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Humeyra',
+                style: GoogleFonts.inter(
+                    color: Colors.black,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w700),
+              ),
+              Text(
+                'last seen 19:45',
+                style: GoogleFonts.inter(
+                  color: Colors.grey[700],
+                  fontSize: 12,
+                ),
+              )
+            ],
+          )
+        ],
+      ),
+      actions: [
+        IconButton(
+            onPressed: () {},
+            icon: const Icon(
+              Ionicons.videocam_outline,
+              color: Colors.blue,
+            )),
+        IconButton(
+            onPressed: () {},
+            icon: const Icon(
+              Ionicons.call_outline,
+              color: Colors.blue,
+            )),
+      ],
+    );
+  }
+
+  Container bottomBar() {
+    return Container(
+      padding: const EdgeInsets.all(8),
+      decoration: BoxDecoration(
+          color: Colors.white,
+          border: Border(top: BorderSide(color: Colors.grey[300]!, width: 1))),
+      child: SafeArea(
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Container(
+              padding: const EdgeInsets.all(8),
+              decoration: const BoxDecoration(
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(
+                Ionicons.add_outline,
+                color: Colors.blue,
+                size: 20,
+              ),
+            ),
+            Expanded(
+                child: ConstrainedBox(
+              constraints: const BoxConstraints(
+                  maxHeight: 72, maxWidth: double.infinity),
+              child: Container(
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                  decoration: BoxDecoration(
+                      color: Colors.grey[100],
+                      border: Border.all(
+                        color: Colors.grey[300]!,
+                        width: 1,
+                      ),
+                      borderRadius: BorderRadius.circular(12)),
+                  width: double.infinity,
+                  child: TextFormField(
+                    controller: _textEditingController,
+                    style: GoogleFonts.inter(),
+                    maxLines: null,
+                    keyboardType: TextInputType.multiline,
+                    decoration: const InputDecoration(
+                        isCollapsed: true,
+                        isDense: true,
+                        border: InputBorder.none),
+                  )),
+            )),
+            const SizedBox(
+              width: 8,
+            ),
+            InkWell(
+              onTap: () {
+                String text = _textEditingController.text;
+                setState(() {
+                  messages.add(ChatCard(isRight: true, text: text));
+                });
+                _textEditingController.clear();
+              },
+              child: Container(
+                padding: const EdgeInsets.all(8),
+                decoration: const BoxDecoration(
+                  color: Colors.blue,
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  Ionicons.paper_plane,
+                  color: Colors.white,
+                  size: 20,
+                ),
+              ),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  //
+  // @afifcodes
+  // afifcodes.vercel.app
+  //
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
-        primarySwatch: Colors.blue,
+    systemUI();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (_scrollController.hasClients) {
+        _scrollController.animateTo(
+          _scrollController.position.maxScrollExtent,
+          duration: const Duration(milliseconds: 500),
+          curve: Curves.easeInOut,
+        );
+      }
+    });
+    return Scaffold(
+      backgroundColor: Colors.grey[50],
+      appBar: appBar(),
+      body: SizedBox(
+        width: double.infinity,
+        child: Column(
+          children: [
+            Expanded(
+                child: ListView(
+              controller: _scrollController,
+              physics: const BouncingScrollPhysics(),
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              children: [
+                const SizedBox(
+                  height: 16,
+                ),
+                ...messages,
+                const SizedBox(
+                  height: 16,
+                )
+              ],
+            )),
+            bottomBar(),
+          ],
+        ),
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
-  }
+class ChatCard extends StatelessWidget {
+  final bool isRight;
+  final String text;
+  const ChatCard({Key? key, required this.text, this.isRight = false})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
-    return Scaffold(
-      appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
-      ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Invoke "debug painting" (press "p" in the console, choose the
-          // "Toggle Debug Paint" action from the Flutter Inspector in Android
-          // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
-          // to see the wireframe for each widget.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
+    return Container(
+      margin: const EdgeInsets.only(top: 8),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment:
+            isRight ? MainAxisAlignment.end : MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          ConstrainedBox(
+            constraints: BoxConstraints(
+              maxWidth: MediaQuery.of(context).size.width * 0.7,
             ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
+            child: Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                  color: isRight ? Colors.blue : Colors.white,
+                  boxShadow: const [
+                    BoxShadow(color: Colors.black12, blurRadius: 1)
+                  ],
+                  borderRadius: BorderRadius.only(
+                      topLeft: const Radius.circular(16),
+                      topRight: const Radius.circular(16),
+                      bottomLeft: Radius.circular(isRight ? 16 : 0),
+                      bottomRight: Radius.circular(isRight ? 0 : 16))),
+              child: Text(
+                text,
+                softWrap: true,
+                style: GoogleFonts.inter(
+                    color: isRight ? Colors.white : Colors.black),
+              ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
